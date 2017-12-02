@@ -1,0 +1,26 @@
+extends layout.pug
+block content
+  - pid = req.query.plugin
+  - plugin = bot.plugins[req.query.plugin]
+
+  .card.main-card
+    .card-header Plugin Info
+    ul.list-group.list-group-flush
+      li.list-group-item Name: #{plugin.name}
+      li.list-group-item ID: #{pid}
+      li.list-group-item Version: #{plugin.version}
+      li.list-group-item #{plugin.description}
+
+  - for (cid in plugin.commands)
+    - command = plugin.commands[cid]
+    .card.main-card
+      .card-header #[code #{cid}] command
+      ul.list-group.list-group-flush
+        - for (branch of command.branches)
+          li.list-group-item(id='cmd-' + cid)
+            h6 #[code #{cid} #{branch.helpDef}] #[span.float-right Permission Level: #{permLevels[branch.level]} (#{branch.level})] #[br]
+            span #{branch.description}
+
+
+block nav
+  include pluginList.pug

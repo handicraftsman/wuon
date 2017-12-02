@@ -1,0 +1,14 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top
+  a.navbar-brand(href='/') Wuon
+  button.navbar-toggler(type='button',data-toggle='collapse',data-target='#navbar')
+    span.navbar-toggler-icon
+  div.collapse.navbar-collapse#navbar
+    .navbar-nav
+      if page == 'index'
+        a.nav-item.nav-link.active(href='/') Home
+      else
+        a.nav-item.nav-link(href='/') Home
+      if page == 'plugin'
+        a.nav-item.nav-link.active(href='/') Plugin Info
+      else
+        a.nav-item.nav-link(href='/') Plugin Info

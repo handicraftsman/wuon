@@ -1,0 +1,19 @@
+extends layout.pug
+block content
+  
+  .card.main-card
+    .card-header About me
+    .card-body.
+      I am an IRC bot which uses the open-source Wuon framework developed by Nickolay Ilyushin.#[br]
+      You can find Wuon's sources on #[a(href="https://github.com/handicraftsman/wuon") github].#[br]
+      You can find the list of available plugins in the left part of this page.
+
+  .card.main-card
+    .card-header I am available on these servers under these nicknames
+    ul.list-group.list-group-flush
+      - for (name in bot.servers)
+        li.list-group-item
+          span #{name}: #{bot.sockets[name].nick}
+
+block nav
+  include pluginList.pug

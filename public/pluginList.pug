@@ -1,0 +1,13 @@
+ul.nav.nav-pills.flex-column(style='margin: 8px')
+  li.nav-item
+    if req.path == '/'
+      a.nav-link.active(href='/') Home
+    else
+      a.nav-link(href='/') Home
+  - for(let pid in bot.plugins)
+    - plugin = bot.plugins[pid]
+    li.nav-item
+      if (req.query.plugin == pid)
+        a.nav-link.active(href='/plugin?plugin=' + pid) #{plugin.name}
+      else
+        a.nav-link(href='/plugin?plugin=' + pid) #{plugin.name}
