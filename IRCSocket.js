@@ -168,6 +168,7 @@ module.exports = class extends events.EventEmitter {
                 user: user,
                 host: host,
                 target: target,
+                replyTo: target == this.nick ? nick : target, 
                 message: message,
                 reply: (msg) => { 
                   if (target == this.nick) {
@@ -190,7 +191,11 @@ module.exports = class extends events.EventEmitter {
   handleCommand(dat) {
     this.bot.getLevel(dat.sock.name, dat.host, (level) => {
       if (level >= dat.branch.level) {
-        dat.branch.handler(dat);
+        var curTime = new Date();
+        if (level >= 2 || dat.branch.lastUsage == null || (curTime - dat.branch.lastUsage) / 1000 > dat.branch.cooldown) {
+          dat.branch.handler(dat);
+          dat.branch.lastUsage = curTime;
+        }
       }
     });
   }
@@ -210,20 +215,62 @@ module.exports = class extends events.EventEmitter {
     this.userCache.setHost(newNick, user);
   }
 
+  format(message) {
+    return message
+      .replace(/[\r\n\t ]+/g, ' ')
+      .replace(/%C%/g,        '%C?')
+      .replace(/\,%/g,        ',?')
+      .replace(/%C/g,         '\x03')
+      .replace(/%B/g,         '\x02')
+      .replace(/%I/g,         '\x10')
+      .replace(/%U/g,         '\x1F')
+      .replace(/%N/g,         '\x0F')
+      .replace(/\?WHITE/g,    '0')
+      .replace(/\?BLACK/g,    '1')
+      .replace(/\?BLUE/g,     '2')
+      .replace(/\?GREEN/g,    '3')
+      .replace(/\?RED/g,      '4')
+      .replace(/\?BROWN/g,    '5')
+      .replace(/\?PURPLE/g,   '6')
+      .replace(/\?ORANGE/g,   '7')
+      .replace(/\?YELLOW/g,   '8')
+      .replace(/\?LGREEN/g,   '9')
+      .replace(/\?CYAN/g  ,   '10')
+      .replace(/\?LCYAN/g,    '11')
+      .replace(/\?LBLUE/g,    '12')
+      .replace(/\?PINK/g,     '13')
+      .replace(/\?GREY/g,     '14')
+      .replace(/\?LGREY/g,    '15');
+  }
+
   privmsg(target, message) {
-    for (var l of message.replace(/[\r\n\t ]+/g, ' ').match(/.{0,400}/g)) {
+    message = this.format(message);
+    for (var l of message.match(/.{0,400}/g)) {
       if (l.trim() != '') {
         this.writeq(`PRIVMSG ${target} :${l}`);
       }
     }
   }
 
+  ctcp(target, message) {
+    this.privmsg(target, `\x01${message}\x01`);
+  }
+
+  action(target, message) {
+    this.ctcp(target, `ACTION ${message}`);
+  }
+
   notice(target, message) {
-    for (var l of message.replace(/[\r\n\t ]+/g, ' ').match(/.{0,400}/g)) {
+    message = this.format(message);
+    for (var l of message.match(/.{0,400}/g)) {
       if (l.trim() != '') {
         this.writeq(`NOTICE ${target} :${l}`);
       }
     }
+  }
+
+  nctcp(target, message) {
+    this.notice(target, `\x01${message}\x01`);
   }
 
   join(target) {

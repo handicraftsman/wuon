@@ -5,7 +5,7 @@ module.exports = class extends (require('../Plugin')) {
   constructor() {
     super();
     this.name = 'Core';
-    this.version = '0.1.0';
+    this.version = require('../version');
     this.description = 'The core plugin';
     
     this.commands.help = new Command();

@@ -18,7 +18,7 @@ block content
       ul.list-group.list-group-flush
         - for (branch of command.branches)
           li.list-group-item(id='cmd-' + cid)
-            h6 #[code #{cid} #{branch.helpDef}] #[span.float-right Permission Level: #{permLevels[branch.level]} (#{branch.level})] #[br]
+            h6 #[code #{cid} #{branch.helpDef}] #[span.float-right Permission Level: #{permLevels[branch.level]} (#{branch.level}) | Cooldown: #{branch.cooldown}s] #[br]
             span #{branch.description}
 
 

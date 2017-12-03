@@ -4,7 +4,7 @@ module.exports = class extends (require('../Plugin')) {
   constructor() {
     super();
     this.name = 'ChanOP';
-    this.version = '0.1.0';
+    this.version = require('../version');
     this.description = 'The chanop plugin';
 
     this.commands.kick = new Command();

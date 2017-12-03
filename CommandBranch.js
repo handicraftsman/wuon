@@ -8,6 +8,8 @@ module.exports = class {
     this.positionals     = [];
     this.accumulate = false
     this.level           = 0;
+    this.cooldown        = 0;
+    this.lastUsage       = null;
     this.handler         = undefined;
 
     for (let word of tdef.split(' ')) {
@@ -61,6 +63,11 @@ module.exports = class {
 
   setLevel(level) {
     this.level = level;
+    return this;
+  }
+
+  setCooldown(cooldown) {
+    this.cooldown = cooldown;
     return this;
   }
 }
